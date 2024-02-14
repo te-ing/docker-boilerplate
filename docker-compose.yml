@@ -1,17 +1,42 @@
 version: '3'
 name: test
 services:
-  db:
-    container_name: test-mysql
-    image: mysql:8.0.29
-    volumes:
-      - './database/mysql/data:/var/lib/mysql'
-      - './database/mysql/securefile:/data/securefile'
-    restart: 'unless-stopped'
+  react-app:
     ports:
-      - "13306:3306"
-    env_file:
-      - ./.env
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
+      - "8080:80"
+    build:
+        context: .
+        dockerfile: ./client/Dockerfile
+  # db:
+  #   container_name: test-mysql
+  #   image: mysql:8.0.29
+  #   volumes:
+  #     - './database/mysql/data:/var/lib/mysql'
+  #     - './database/mysql/securefile:/data/securefile'
+  #   restart: 'unless-stopped'
+  #   ports:
+  #     - "13306:3306"
+  #   env_file:
+  #     - ./.env
+  #   command:
+  #     - --character-set-server=utf8mb4
+  #     - --collation-server=utf8mb4_unicode_ci
+
+  # nginx:
+  #   ports:
+  #     - "8080:80"
+  #   volumes:
+  #     - ./nginx/html:/usr/share/nginx/html
+  #   build:
+  #       context: .
+  #       dockerfile: ./client/Dockerfile
+  
+  # server:
+  #   container_name: test-server
+  #   build:
+  #       context: .
+  #       dockerfile: ./server/Dockerfile
+  #   ports:
+  #       - '3000:3000'
+  #   depends_on: # db server가 먼저 실행된 다음, 실행되어야 하는 컨테이너임.
+  #       - db
