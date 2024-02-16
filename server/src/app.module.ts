@@ -9,8 +9,8 @@ import { PostModule } from './post/post.module';
     PostModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 13306,
+      host: 'host.docker.internal',
+      port: 3306,
       username: 'test_user',
       password: '1234!',
       database: 'test_db',
