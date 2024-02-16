@@ -1,0 +1,25 @@
+# Node.js 버전 18이 설치된 Alpine Linux 기반의 Docker 이미지
+# 알파인 리눅스는 '작고', '보안이 뛰어나고', '간단함'. (기본적으로 타 리눅스 배포판보다 훨씬 가볍고 깔끔한 것이 장점)
+FROM node:18-alpine as build
+
+# 현재 디렉토리의 모든 파일과 폴더를 /app 디렉토리로 복사. 
+# Docker 이미지 안에서 /app 경로에 프로젝트 파일들이 복사됨.
+WORKDIR /app
+
+COPY client .
+
+# 디렉토리 안의 파일 및 폴더 목록을 출력 (Docker 빌드 중에 디렉토리 안의 내용을 확인 가능)
+RUN ls -al
+
+RUN npm install
+RUN npm run build
+
+# ADD 명령어와 마찬가지로 COPY 명령어도 파일 및 폴더를 복사. 단순한 파일 복사 작업을 수행할 때는 COPY가 더 권장됨.
+# ADD 명령어 : 압축 해제한 상태로 저장 및 URL 다운로드와 같은 기능 제공
+
+# 작업 디렉토리를 /app로 설정하여 이후의 명령들이 이 디렉토리에서 실행되도록 함.
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
