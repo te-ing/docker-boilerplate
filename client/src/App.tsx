@@ -3,9 +3,8 @@ import './App.css'
 
 function App() {
   const [dataList, setDataList] = useState<{ id: number;  title: string}>()
-
   const getData = async () => {
-    const res = await fetch("http://localhost:3000/api/post");
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/post`);
     const data = await res.json();
     setDataList(data[data.length-1]);
   } 
@@ -14,7 +13,7 @@ function App() {
   }, [])
 
   const createNewTitle = async () => {
-    await fetch("http://localhost:3000/api/post", { method: "POST" });
+    await fetch(`${import.meta.env.VITE_API_URL}/post`, { method: "POST" });
     getData();
   }
 

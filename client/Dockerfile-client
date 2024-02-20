@@ -6,6 +6,7 @@ FROM node:18-alpine as build
 # Docker 이미지 안에서 /app 경로에 프로젝트 파일들이 복사됨.
 WORKDIR /app
 
+COPY ./.env .
 COPY client .
 
 # 디렉토리 안의 파일 및 폴더 목록을 출력 (Docker 빌드 중에 디렉토리 안의 내용을 확인 가능)

@@ -1,18 +1,38 @@
 version: '3.8'
-name: test
+
+name: nginx-test
 services:
-  client:
+  nginx:
+    container_name: nginx-nginx
     build:
-        context: .
-        dockerfile: ./client/Dockerfile-client
-    container_name: test-client
-    restart: unless-stopped
+      context: .
+      dockerfile: client/Dockerfile-client
+    image: nginx:latest
     ports:
       - "8080:80"
+    # volumes:
+    #   - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    # environment:
+    #   - CLIENT_URL=${CLIENT_URL}
+    #   - SERVER_URL=${SERVER_URL}
+
+  server:
+    container_name: nginx-server
+    build:
+      context: .
+      dockerfile: server/Dockerfile-server
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    command: npm run start
+    depends_on:
+      - mysql
+    networks:
+      - test-network
 
   mysql:
     image: mysql:8.0.29
-    container_name: test-mysql
+    container_name: nginx-mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -23,20 +43,6 @@ services:
       - ./mysql:/var/lib/mysql
     ports:
       - '3306:3306'
-    networks:
-      - test-network
-
-  backend:
-    build:
-      context: ./
-      dockerfile: ./server/Dockerfile-server
-    container_name: test-server
-    restart: unless-stopped
-    ports:
-      - '3000:3000'
-    depends_on:
-      - mysql
-    command: npm run start
     networks:
       - test-network
 
