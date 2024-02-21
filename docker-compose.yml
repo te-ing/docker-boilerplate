@@ -5,6 +5,8 @@ services:
     build:
         context: .
         dockerfile: ./client/Dockerfile-client
+        args:
+          - VITE_API_URL=$VITE_API_URL
     container_name: test-client
     restart: unless-stopped
     ports:
