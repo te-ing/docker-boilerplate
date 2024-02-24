@@ -8,6 +8,6 @@ async function bootstrap() {
     AppModule,
     appOptions,
   );
-  await app.listen(3000);
+  await app.listen(8000);
 }
 bootstrap();
