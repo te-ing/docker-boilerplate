@@ -1,44 +1,14 @@
-version: '3'
-name: test
+version: '3.8'
+
 services:
-  nginx:
-    ports:
-      - "80:80"
-      - "443:443"
+  app:
+    image: node-image-local
+    env_file: .env-local
+    environment:
+      - PORT=${PORT}
     build:
-      context: .
-      dockerfile: client/Dockerfile-client
-    env_file:
-      - .env
-    volumes:
-        - "./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template"
-        - "$LOCAL_KEY_LOCATION:$NGINX_KEY_LOCATION"
-        - "$LOCAL_CERT_LOCATION:$NGINX_CERT_LOCATION"
-      
-  db:
-    container_name: test-mysql
-    image: mysql:8.0.29
-    volumes:
-      - './database/mysql/data:/var/lib/mysql'
-      - './database/mysql/securefile:/data/securefile'
-    restart: 'unless-stopped'
+      dockerfile: Dockerfile
+      args:
+        - PORT=${PORT}  # 빌드 단계에서 환경 변수를 사용하려면 직접 정의하거나 .env.local을 참조하지 않음
     ports:
-      - "3306:3306"
-    env_file:
-      - ./.env
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-  
-  server:
-    container_name: test-server
-    build:
-        context: .
-        dockerfile: ./server/Dockerfile
-    ports:
-        - '3000:3000'
-    volumes:
-      - "$LOCAL_KEY_LOCATION:$SERVER_KEY_LOCATION"
-      - "$LOCAL_CERT_LOCATION:$SERVER_CERT_LOCATION"
-    depends_on: # db server가 먼저 실행된 다음, 실행되어야 하는 컨테이너임.
-        - db
+      - 4000:4000
